@@ -65,11 +65,11 @@ public class SpriteLoader
 		Image image = gc.createCompatibleImage(32, 32, Transparency.BITMASK);
 		
 		// Finds the x and y coordinates of the sprite according to the index and gets the subimage from the sprite sheet
-		// Note that 32 is the number of sprites per row in the sheet, not the sprite size
+		// Note that 16 is the number of sprites per row in the sheet, not the sprite size
 		BufferedImage subImage = null;
 		int x = 0, y = 0;
-		y = index / 32;
-		x = index - y * 32;
+		y = index / 16;
+		x = index - y * 16;
 		// Convert the (x, y) coordinate of the sprite into coordinate of start pixel
 		x *= 32;
 		y *= 32;
@@ -118,10 +118,11 @@ public class SpriteLoader
 		
 		// Sprites are 32 pixels square
 		GraphicsConfiguration gc = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
-		Image image = gc.createCompatibleImage(32, 32, Transparency.TRANSLUCENT);
+		Image image = gc.createCompatibleImage(source.getWidth(), source.getHeight(), Transparency.TRANSLUCENT);
 		
 		image.getGraphics().drawImage(source, 0, 0, null);
 		
+		Log.info("Putting Sprite " + name + " in the cache");
 		Sprite sprite = new Sprite(image);
 		images.put(name, sprite);
 		

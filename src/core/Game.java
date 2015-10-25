@@ -7,8 +7,6 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Toolkit;
 import java.awt.image.BufferStrategy;
-import java.io.IOException;
-import java.util.logging.Logger;
 
 import javax.swing.JFrame;
 
@@ -18,8 +16,8 @@ import graphics.SpriteLoader;
 /**
  * Main class for ATLAS. Runs the game engine and all important functions
  * 
- * @author Jonathan Davis
- *
+ * @author Jonathan Davis Copyright 2015
+ * 
  */
 
 @SuppressWarnings("serial")
@@ -78,8 +76,8 @@ public class Game extends Canvas implements Runnable
 		Log.info("Performing init");
 		state = GameState.Menu;
 		spriteLoader = SpriteLoader.getSingleton();
-		renderer = new Render(this, window);
 		input = new InputHandler(this);
+		renderer = new Render(this, window);
 	}
 	
 	public void start()
@@ -195,10 +193,10 @@ public class Game extends Canvas implements Runnable
 	
 	private void getInput()
 	{
-		
+		input.getInput();
 	}
 	
-	private enum GameState
+	public enum GameState
 	{
 		Menu, Options, Setup, Store, Play
 	}

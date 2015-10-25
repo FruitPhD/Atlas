@@ -4,6 +4,7 @@ public class Reference
 {
 	public static final String NAME = "ATLAS";
 	public static final String VERSION = "v0.1.0";
+	public static final String WEBSITE = "https://sites.google.com/site/fruitprogramming/";
 	public static final String LOGGER_NAME = "ATLAS LOG";
 	public static final String LOGGER_FILE = "logs/";
 	public static final String SPRITESHEET_PATH = "res/sprites.png";

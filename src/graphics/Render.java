@@ -1,18 +1,19 @@
 package graphics;
 
 import java.awt.Graphics;
-import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferInt;
+import java.util.Iterator;
 
 import javax.swing.JFrame;
 
+import components.Button;
 import core.Game;
-import core.Log;
+import core.InputHandler;
 
 public class Render
 {
 	private Game game;
 	private JFrame window;
+	private InputHandler input;
 	
 	private SpriteLoader spriteLoader;
 	
@@ -21,6 +22,24 @@ public class Render
 		this.game = game;
 		this.window = window;
 		this.spriteLoader = game.spriteLoader;
+		this.input = game.input;
+		
+		init();
+	}
+	
+	private void init()
+	{
+		int x = window.getWidth() / 2 - 256;
+		int y = window.getHeight() / 2 - 64;
+		Button play = new Button(x, y, "play", "Play");
+		Button settings = new Button(x, y += 90, "settings", "Settings");
+		Button about = new Button(x, y += 90, "about", "About");
+		Button quit = new Button(x, y += 90, "quit", "Quit");
+		
+		input.addButton(play);
+		input.addButton(settings);
+		input.addButton(about);
+		input.addButton(quit);
 	}
 	
 	public void renderMenu(Graphics g)
@@ -28,6 +47,15 @@ public class Render
 		drawRect(0, 0, window.getWidth() / 32, window.getHeight() / 32, 0, g);
 		drawRect(0, (int) (window.getHeight() / 32 * (5.0f/ 8)), window.getWidth() / 32, 1, 2, g);
 		drawRect(0, (int) (window.getHeight() / 32 * (5.0f/ 8)) + 1, window.getWidth() / 32, (int) (window.getHeight() / 32 * (3.0f/ 8)) - 1, 1, g);
+		draw(window.getWidth() / 32 / 5, 5, "title", g);
+		
+		Iterator<Button> i = input.getButtons().iterator();
+		while (i.hasNext())
+		{
+			Button button = i.next();
+			button.draw(g);
+			draw(button.getName(), button.getX(), button.getY(), g);
+		}
 	}
 	
 	/**
@@ -41,6 +69,11 @@ public class Render
 	private void draw(int x, int y, int index, Graphics g)
 	{
 		g.drawImage(spriteLoader.loadSprite(index).getImage(), x * 32, y * 32, null);
+	}
+	
+	private void draw(int x, int y, String name, Graphics g)
+	{
+		g.drawImage(spriteLoader.loadSprite(name).getImage(), x * 32, y * 32, null);
 	}
 	
 	/**
@@ -60,6 +93,28 @@ public class Render
 			for (int j = x; j < x + width; j++)
 			{
 				draw(j, i, index, g);
+			}
+		}
+	}
+	
+	
+	
+	
+	
+	// This is the order in which the chars show up in the sprite sheet
+	private static String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ .,!?\"0123456789      ";
+	
+	public void draw(String string, int x, int y, Graphics g)
+	{
+		String str = string.toUpperCase();
+		
+		for (int i = 0; i < str.length(); i++)
+		{
+			int index = chars.indexOf(str.charAt(i));
+			if (index >= 0)
+			{
+				// index of the char in the string + the initial char index in the sprite sheet
+				g.drawImage(spriteLoader.loadSprite(index + 16 * 13).getImage(), x + i * 32, y, null);
 			}
 		}
 	}
