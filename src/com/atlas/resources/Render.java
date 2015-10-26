@@ -41,6 +41,28 @@ public class Render
 		input.addMenuButton(settings);
 		input.addMenuButton(about);
 		input.addMenuButton(quit);
+		
+		
+		
+		x = window.getWidth() / 2 - 256;
+		y = window.getHeight() / 4 - 32;
+		Button red = new Button(spriteLoader.getSingleton().loadSprite(16).getImage(), x, y, "red", "");
+		Button green = new Button(spriteLoader.getSingleton().loadSprite(32).getImage(), x, y += 60, "green", "");
+		Button blue = new Button(spriteLoader.getSingleton().loadSprite(48).getImage(), x, y += 60, "blue", "");
+		Button yellow = new Button(spriteLoader.getSingleton().loadSprite(64).getImage(), x, y += 60, "yellow", "");
+		Button white = new Button(spriteLoader.getSingleton().loadSprite(80).getImage(), x, y += 60, "white", "");
+		Button black = new Button(spriteLoader.getSingleton().loadSprite(96).getImage(), x, y += 60, "black", "");
+		Button go = new Button(x, y += 90, "go", "Go!");
+		Button back = new Button(x, y += 180, "back", "Return");
+		
+		input.addSetupButton(red);
+		input.addSetupButton(green);
+		input.addSetupButton(blue);
+		input.addSetupButton(yellow);
+		input.addSetupButton(white);
+		input.addSetupButton(black);
+		input.addSetupButton(go);
+		input.addSetupButton(back);
 	}
 	
 	
@@ -81,7 +103,34 @@ public class Render
 	
 	public void renderSetup(Graphics g)
 	{
+		drawTileRect(0, 0, window.getWidth() / 32, window.getHeight() / 32, 0, g);
+		drawTileRect(0, (int) (window.getHeight() / 32 * (5.0f / 8)), window.getWidth() / 32, 1, 2, g);
+		drawTileRect(0, (int) (window.getHeight() / 32 * (5.0f / 8)) + 1, window.getWidth() / 32, (int) (window.getHeight() / 32 * (3.0f/ 8)) - 1, 1, g);
+		draw(window.getWidth() / 5, 96 + (int) (16 * Math.sin(game.getTicks() / 50.0)), "setup", g);
 		
+		draw(window.getWidth() / 5, (int) (window.getHeight() * (5.0f / 8) - 32), 7, g);
+		
+		draw(0 + MathHelper.clamp((int) (-64 + game.getTicks() / 5 % 2147483647), -64, window.getWidth()),
+				(int) (window.getHeight() * (5.0f / 8) - 32), 114, g);
+		draw(0 + MathHelper.clamp((int) (-64 + game.getTicks() / 5 % 2147483647), -64, window.getWidth()),
+				(int) (window.getHeight() * (5.0f / 8) - 32), (int) (16 + game.getTicks() / 5 % 2), g);
+		
+		
+		
+		for (int i = 0; i < 6; i++)
+		{
+			draw(window.getWidth() / 2 - 256, window.getHeight() / 4 - 32 + i * 60, 115, g);
+		}
+		
+		Iterator<Button> i = input.getSetupButtons().iterator();
+		while (i.hasNext())
+		{
+			Button button = i.next();
+			String name = button.getName();
+			
+			button.draw(g);
+			draw(name, button.getX() + 32, button.getY() + button.getHeight() / 4, g);
+		}
 	}
 	
 	public void renderStore(Graphics g)

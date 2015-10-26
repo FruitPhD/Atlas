@@ -219,6 +219,17 @@ public class InputHandler implements KeyListener, MouseListener
 		{
 			game.state = Game.GameState.Setup;
 		}
+		
+		// TODO Options
+		
+		if (pointer == "go")
+		{
+			game.state = Game.GameState.Store;
+		}
+		if (pointer == "back")
+		{
+			game.state = Game.GameState.Menu;
+		}
 	}
 	
 	@Override

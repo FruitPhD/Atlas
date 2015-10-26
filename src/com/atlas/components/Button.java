@@ -41,6 +41,18 @@ public class Button
 		this.active = true;
 	}
 	
+	public Button(Image image, int x, int y, int width, int height, String pointer, String name)
+	{
+		this.image = image;
+		this.x = x;
+		this.y = y;
+		this.width = width;
+		this.height = height;
+		this.pointer = pointer;
+		this.name = name;
+		this.active = true;
+	}
+	
 	public void draw(Graphics g)
 	{
 		g.drawImage(image, x, y, null);
