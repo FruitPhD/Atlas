@@ -15,13 +15,13 @@ import java.util.logging.SimpleFormatter;
 public class Log
 {
 	private static final Logger LOG = Logger.getLogger(Reference.LOGGER_NAME);
-	private static List logs;
+	private static List<String> logs;
 	private static int logCount = 0;
 	
 	public static void init()
 	{
 		LOG.setLevel(Level.CONFIG);
-		logs = new ArrayList();
+		logs = new ArrayList<String>();
 	}
 	
 	/** Prints the crash report to the file */
@@ -39,7 +39,7 @@ public class Log
 			PrintWriter write = new PrintWriter("file");
 			write.println(file + "\tWell that didn't go well did it?");
 			write.println();
-			Iterator iter = logs.iterator();
+			Iterator<String> iter = logs.iterator();
 			while (iter.hasNext())
 			{
 				write.println(iter.next());
@@ -72,6 +72,7 @@ public class Log
 		logCount++;
 	}
 	
+	@SuppressWarnings("unused")
 	private static void config(String message)
 	{
 		LOG.config(message);

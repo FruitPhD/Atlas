@@ -10,8 +10,8 @@ import java.awt.image.BufferStrategy;
 
 import javax.swing.JFrame;
 
-import com.atlas.resources.Render;
-import com.atlas.resources.SpriteLoader;
+import com.atlas.graphics.Render;
+import com.atlas.graphics.SpriteLoader;
 
 /**
  * Main class for ATLAS. Runs the game engine and all important functions
@@ -23,7 +23,7 @@ import com.atlas.resources.SpriteLoader;
 @SuppressWarnings("serial")
 public class Game extends Canvas implements Runnable
 {
-	private JFrame window;
+	public JFrame window;
 	public static int width = 640;
 	public static int height = 480;
 	
@@ -35,6 +35,10 @@ public class Game extends Canvas implements Runnable
 	public Render renderer;
 	public InputHandler input;
 	public SpriteLoader spriteLoader;
+	
+	public Map map;
+	public PlayerType[] players = {PlayerType.NONE, PlayerType.NONE, PlayerType.NONE,
+									PlayerType.NONE, PlayerType.NONE, PlayerType.NONE};
 	
 	public Game()
 	{
@@ -78,7 +82,8 @@ public class Game extends Canvas implements Runnable
 		state = GameState.Menu;
 		spriteLoader = SpriteLoader.getSingleton();
 		input = new InputHandler(this);
-		renderer = new Render(this, window);
+		renderer = new Render(this);
+		map = new Map(this);
 	}
 	
 	public void start()
@@ -105,6 +110,7 @@ public class Game extends Canvas implements Runnable
 		
 		int updates = 0;
 		int frames = 0;
+		int fps = 0;
 		double unprocessed = 0;
 		boolean render = false;
 		
@@ -128,15 +134,16 @@ public class Game extends Canvas implements Runnable
 			// Prevents too many renders
 			if (render)
 			{
-				render();
 				frames++;
+				render(fps);
 				getInput();
 			}
 			
 			if (System.currentTimeMillis() - lastRun >= 1000)
 			{
 				lastRun += 1000;
-				System.out.println("Updates: " + updates + ", Frames: " + frames);
+				
+				fps = frames;
 				
 				updates = 0;
 				frames = 0;
@@ -161,7 +168,7 @@ public class Game extends Canvas implements Runnable
 		}
 	}
 	
-	private void render()
+	private void render(int fps)
 	{
 		BufferStrategy bs = getBufferStrategy();
 		if (bs == null)
@@ -194,6 +201,8 @@ public class Game extends Canvas implements Runnable
 			break;
 		}
 		
+		g.drawString("FPS: " + fps, 10, 15);
+		
 		g.dispose();
 		bs.show();
 	}
@@ -208,8 +217,55 @@ public class Game extends Canvas implements Runnable
 		return ticks;
 	}
 	
+	/** Cycles the given player (1 - 6) through types NONE, HUMAN, CPU */
+	public void changePlayer(int player)
+	{
+		if (player < 1 || player > 6) return;
+		
+		PlayerType type = players[player - 1];
+		
+		switch(type)
+		{
+		case NONE:
+			players[player - 1] = PlayerType.HUMAN;
+			break;
+		case HUMAN:
+			players[player - 1] = PlayerType.CPU;
+			break;
+		case CPU:
+			players[player - 1] = PlayerType.NONE;
+		}
+	}
+	
 	public enum GameState
 	{
 		Menu, Options, Setup, Store, Play
+	}
+	
+	public enum PlayerType
+	{
+		NONE("player_none"), HUMAN("player_human"), CPU("player_cpu");
+		
+		String texture;
+		
+		private PlayerType(String texture)
+		{
+			this.texture = texture;
+		}
+	}
+	
+	public String getTexture(PlayerType playerType)
+	{
+		switch(playerType)
+		{
+		case NONE:
+			return "player_none";
+		case HUMAN:
+			return "player_human";
+		case CPU:
+			return "player_cpu";
+		default:
+			return "player_none";
+		}
 	}
 }

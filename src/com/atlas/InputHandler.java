@@ -6,7 +6,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -14,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.atlas.components.Button;
+import com.atlas.graphics.Button;
 
 public class InputHandler implements KeyListener, MouseListener
 {
@@ -215,20 +214,50 @@ public class InputHandler implements KeyListener, MouseListener
 		{
 			game.state = Game.GameState.Options;
 		}
-		if (pointer == "play")
+		if (pointer == "setup")
 		{
 			game.state = Game.GameState.Setup;
 		}
 		
 		// TODO Options
 		
-		if (pointer == "go")
+		if (pointer == "store")
 		{
 			game.state = Game.GameState.Store;
 		}
-		if (pointer == "back")
+		if (pointer == "red")
+		{
+			game.changePlayer(1);
+		}
+		if (pointer == "green")
+		{
+			game.changePlayer(2);
+		}
+		if (pointer == "blue")
+		{
+			game.changePlayer(3);
+		}
+		if (pointer == "yellow")
+		{
+			game.changePlayer(4);
+		}
+		if (pointer == "white")
+		{
+			game.changePlayer(5);
+		}
+		if (pointer == "black")
+		{
+			game.changePlayer(6);
+		}
+		if (pointer == "menu")
 		{
 			game.state = Game.GameState.Menu;
+		}
+		
+		if (pointer == "start")
+		{
+			game.map.generate();
+			game.state = Game.GameState.Play;
 		}
 	}
 	
