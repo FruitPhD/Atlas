@@ -12,6 +12,10 @@ public class Reference
 	
 	public static final int MAP_WIDTH = 2048;
 	
+	/** Gravitational acceleration */
+	public static final float gravity = 9.80665f / 20f;
+	
 	/** Sets the UPS to 60*/
 	public static final double NANOSECONDS_PER_TICK = 1000000000.0 / 60.0;
+	public static final double SECONDS_PER_TICK = 1.0 / 60.0;
 }

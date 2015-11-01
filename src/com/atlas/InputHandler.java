@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -37,6 +38,7 @@ public class InputHandler implements KeyListener, MouseListener
 		pauseButtons = new ArrayList<Button>();
 		game.addKeyListener(this);
 		game.addMouseListener(this);
+		setupKeys();
 	}
 	
 	public void getInput()
@@ -129,32 +131,66 @@ public class InputHandler implements KeyListener, MouseListener
 		}
 	}
 	
-	public List<Key> keys = new ArrayList<Key>();
+	public HashMap<Character, Key> keys = new HashMap<Character, Key>();
+	
+	private void setupKeys()
+	{
+		keys.put(' ', new Key());
+		keys.put('w', new Key());
+		keys.put('a', new Key());
+		keys.put('s', new Key());
+		keys.put('d', new Key());
+		keys.put('r', new Key());
+		keys.put('f', new Key());
+	}
 	
 	@Override
 	public void keyTyped(KeyEvent e)
 	{
-		// TODO Auto-generated method stub
-		
+		if (e.getKeyChar() == ' ')
+			toggleKey(' ', true);
+		if (e.getKeyChar() == 'w')
+			toggleKey('w', true);
+		if (e.getKeyChar() == 'a')
+			toggleKey('a', true);
+		if (e.getKeyChar() == 's')
+			toggleKey('s', true);
+		if (e.getKeyChar() == 'd')
+			toggleKey('d', true);
+		if (e.getKeyChar() == 'r')
+			toggleKey('r', true);
+		if (e.getKeyChar() == 'f')
+			toggleKey('f', true);
 	}
 
 	@Override
 	public void keyPressed(KeyEvent e)
 	{
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e)
 	{
-		// TODO Auto-generated method stub
-		
+		if (e.getKeyChar() == ' ')
+			toggleKey(' ', false);
+		if (e.getKeyChar() == 'w')
+			toggleKey('w', false);
+		if (e.getKeyChar() == 'a')
+			toggleKey('a', false);
+		if (e.getKeyChar() == 's')
+			toggleKey('s', false);
+		if (e.getKeyChar() == 'd')
+			toggleKey('d', false);
+		if (e.getKeyChar() == 'r')
+			toggleKey('r', false);
+		if (e.getKeyChar() == 'f')
+			toggleKey('f', false);
 	}
 	
-	public void toggleKey(int keyCode, boolean isDown)
+	public void toggleKey(char keyCode, boolean isDown)
 	{
-		
+		keys.get(keyCode).toggle(isDown);
 	}
 	
 	
@@ -257,6 +293,7 @@ public class InputHandler implements KeyListener, MouseListener
 		if (pointer == "start")
 		{
 			game.map.generate();
+			game.setupGameComponents();
 			game.state = Game.GameState.Play;
 		}
 	}
@@ -292,5 +329,28 @@ public class InputHandler implements KeyListener, MouseListener
 	{
 		// TODO Auto-generated method stub
 		
+	}
+	
+	public int getTankInput(int index)
+	{
+		if (index == game.getTurn() && game.isReady())
+		{
+			if (keys.get(' ').down)
+				return 0;
+			if (keys.get('a').down)
+				return 1;
+			if (keys.get('d').down)
+				return 2;
+			if (keys.get('w').down)
+				return 3;
+			if (keys.get('s').down)
+				return 4;
+			if (keys.get('r').down)
+				return 5;
+			if (keys.get('f').down)
+				return 6;
+		}
+		
+		return -1;
 	}
 }

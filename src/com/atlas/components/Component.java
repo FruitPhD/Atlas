@@ -2,23 +2,25 @@ package com.atlas.components;
 
 public abstract class Component
 {
-	void update(long ticks)
+	boolean enabled = true;
+	
+	public void update(long ticks)
 	{
 		
 	}
 	
 	boolean isEnabled()
 	{
-		return false;
+		return enabled;
 	}
 	
 	void enable()
 	{
-		
+		enabled = true;
 	}
 	
 	void disable()
 	{
-		
+		enabled = false;
 	}
 }

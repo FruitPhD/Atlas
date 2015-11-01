@@ -229,12 +229,12 @@ public class Render
 	 * @param index - the index of the sprite
 	 * @param g - the graphics to draw to
 	 */
-	private void draw(int x, int y, int index, Graphics g)
+	public void draw(int x, int y, int index, Graphics g)
 	{
 		g.drawImage(spriteLoader.loadSprite(index).getImage(), x, y, null);
 	}
 	
-	private void draw(int x, int y, String name, Graphics g)
+	public void draw(int x, int y, String name, Graphics g)
 	{
 		g.drawImage(spriteLoader.loadSprite(name).getImage(), x, y, null);
 	}
@@ -247,7 +247,7 @@ public class Render
 	 * @param index - the index of the sprite
 	 * @param g - the graphics to draw to
 	 */
-	private void drawTile(int x, int y, int index, Graphics g)
+	public void drawTile(int x, int y, int index, Graphics g)
 	{
 		draw(x * 32, y * 32, index, g);
 	}
@@ -262,7 +262,7 @@ public class Render
 	 * @param index - the index of the sprite
 	 * @param g - the graphics to draw to
 	 */
-	private void drawTileRect(int x, int y, int width, int height, int index, Graphics g)
+	public void drawTileRect(int x, int y, int width, int height, int index, Graphics g)
 	{
 		for (int i = y; i < y + height; i++)
 		{
@@ -293,17 +293,17 @@ public class Render
 	
 	private void drawBackground(String title, Graphics g)
 	{
-		drawTileRect(0, 0, window.getWidth() / 32, window.getHeight() / 32, 0, g);
-		drawTileRect(0, (int) (window.getHeight() / 32 * (5.0f / 8)), window.getWidth() / 32, 1, 1, g);
-		drawTileRect(0, (int) (window.getHeight() / 32 * (5.0f / 8)) + 1, window.getWidth() / 32, (int) (window.getHeight() / 32 * (3.0f/ 8)) - 1, 4, g);
+		renderTerrain(g);
+		int[] terrain = game.map.getTerrain();
+		
+		draw(window.getWidth() / 5, window.getHeight() - terrain[window.getWidth() / 5 + 16] - 32, 10, g);
+		
+		int x = MathHelper.clamp((int) (-64 + game.getTicks() / 10 % 2147483647), - 64, window.getWidth());
+		int y = window.getHeight() - terrain[MathHelper.clamp(x, -16, window.getWidth()) + 16] - 32;
+		draw(x, y, 114, g);
+		draw(x, y, (int) (16 + game.getTicks() / 10 % 2), g);
+		
 		draw(window.getWidth() / 5, 80 + (int) (16 * Math.sin(game.getTicks() / 50.0)), title, g);
-		
-		draw(window.getWidth() / 5, (int) (window.getHeight() * (5.0f / 8) - 32), 10, g);
-		
-		draw(0 + MathHelper.clamp((int) (-64 + game.getTicks() / 5 % 2147483647), - 64, window.getWidth()),
-				(int) (window.getHeight() * (5.0f / 8) - 32), 114, g);
-		draw(0 + MathHelper.clamp((int) (-64 + game.getTicks() / 5 % 2147483647), - 64, window.getWidth()),
-				(int) (window.getHeight() * (5.0f / 8) - 32), (int) (16 + game.getTicks() / 5 % 2), g);
 	}
 	
 	private Image generateTerrainImage(int x, int y, int width, int height, int index)

@@ -7,9 +7,16 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Toolkit;
 import java.awt.image.BufferStrategy;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.swing.JFrame;
 
+import com.atlas.components.Component;
+import com.atlas.components.DrawableComponent;
+import com.atlas.components.Shell;
+import com.atlas.components.Tank;
 import com.atlas.graphics.Render;
 import com.atlas.graphics.SpriteLoader;
 
@@ -30,6 +37,9 @@ public class Game extends Canvas implements Runnable
 	public GameState state;
 	private boolean running = false;
 	private long ticks = 0;
+	private boolean ready;
+	private boolean componentsAddUpdate = false;
+	private boolean componentsDeleteUpdate = false;
 	
 	public Game instance;
 	public Render renderer;
@@ -39,6 +49,7 @@ public class Game extends Canvas implements Runnable
 	public Map map;
 	public PlayerType[] players = {PlayerType.NONE, PlayerType.NONE, PlayerType.NONE,
 									PlayerType.NONE, PlayerType.NONE, PlayerType.NONE};
+	public List<Component> components = new ArrayList<Component>();
 	
 	public Game()
 	{
@@ -108,6 +119,7 @@ public class Game extends Canvas implements Runnable
 		long lastRun = System.currentTimeMillis();
 		long oldTime = System.nanoTime();
 		
+		int readycount = 0;
 		int updates = 0;
 		int frames = 0;
 		int fps = 0;
@@ -143,6 +155,16 @@ public class Game extends Canvas implements Runnable
 			{
 				lastRun += 1000;
 				
+				if (readycount >= 1)
+				{
+					ready = true;
+					readycount = 0;
+				}
+				else if (ready == false)
+				{
+					readycount++;
+				}
+				
 				fps = frames;
 				
 				updates = 0;
@@ -164,6 +186,10 @@ public class Game extends Canvas implements Runnable
 		case Store:
 			break;
 		case Play:
+			removeQueuedComponents();
+			addQueuedComponents();
+			for (Component c: components)
+				c.update(ticks);
 			break;
 		}
 	}
@@ -198,6 +224,13 @@ public class Game extends Canvas implements Runnable
 			break;
 		case Play:
 			renderer.renderGame(g);
+			for (Component c: components)
+			{
+				if (c instanceof DrawableComponent)
+				{
+					((DrawableComponent) c).render(g);
+				}
+			}
 			break;
 		}
 		
@@ -267,5 +300,106 @@ public class Game extends Canvas implements Runnable
 		default:
 			return "player_none";
 		}
+	}
+	
+	private int turn;
+	private int playerCount = 0;
+	private List<Component> queuedComponents = new ArrayList<Component>();
+	private List<Component> queuedDeletedComponents = new ArrayList<Component>();
+	
+	public void setupGameComponents()
+	{
+		// Create the AI and Player tanks
+		for (int i = 0; i < players.length; i++)
+		{
+			if (players[i] != PlayerType.NONE)
+			{
+				int[] terrain = map.getTerrain();
+				int x = window.getWidth() / 8 + (int) (Math.random() * 1000);
+				int y = window.getHeight() - terrain[x];
+				
+				Log.info("Created tank - Index: " + playerCount);
+				components.add(new Tank(x, playerCount, players[i], this));
+				playerCount++;
+			}
+		}
+		turn = (int) (Math.random() * (playerCount));
+	}
+	
+	public void addComponent(Component c)
+	{
+		if (!components.contains(c))
+		{
+			componentsAddUpdate = true;
+			queuedComponents.add(c);
+		}
+	}
+	
+	private void addQueuedComponents()
+	{
+		if (componentsAddUpdate == false) return;
+		
+		for (Component c: queuedComponents)
+		{
+			components.add(c);
+		}
+		
+		for (int i = 0; i < queuedComponents.size(); i++)
+		{
+			queuedComponents.remove(i);
+		}
+		
+		componentsAddUpdate = false;
+	}
+	
+	public void removeComponent(Component c)
+	{
+		if (components.contains(c))
+		{
+			componentsDeleteUpdate = true;
+			queuedDeletedComponents.add(c);
+		}
+	}
+	
+	private void removeQueuedComponents()
+	{
+		if (componentsDeleteUpdate == false) return;
+		
+		for (Component c: queuedDeletedComponents)
+		{
+			components.remove(c);
+		}
+		
+		for (int i = 0; i < queuedDeletedComponents.size(); i++)
+		{
+			queuedDeletedComponents.remove(i);
+		}
+		
+		componentsDeleteUpdate = false;
+	}
+	
+	public int getTurn()
+	{
+		return turn;
+	}
+	
+	public void endTurn()
+	{
+		int turns = playerCount - 1;
+		if (turn + 1 > turns)
+		{
+			turn = 0;
+		}
+		else
+		{
+			turn++;
+		}
+		
+		ready = false;
+	}
+	
+	public boolean isReady()
+	{
+		return ready;
 	}
 }

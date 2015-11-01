@@ -4,23 +4,25 @@ import java.awt.Graphics;
 
 public abstract class DrawableComponent extends Component
 {
-	void render(Graphics g)
+	boolean visible = true;
+	
+	public void render(Graphics g)
 	{
 		
 	}
 	
 	boolean isVisible()
 	{
-		return false;
+		return visible;
 	}
 	
 	void makeVisible()
 	{
-		
+		visible = true;
 	}
 	
 	void makeInvisible()
 	{
-		
+		visible = false;
 	}
 }

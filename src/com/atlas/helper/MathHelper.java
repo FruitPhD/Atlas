@@ -10,4 +10,12 @@ public class MathHelper
 		
 		return i;
 	}
+
+	public static float clamp(float clamp, float lower, float upper) {
+		float i = clamp;
+		if (i < lower) i = lower;
+		if (i > upper) i = upper;
+		
+		return i;
+	}
 }
